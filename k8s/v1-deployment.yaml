@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: todo-v1
-          image: YOUR_DOCKERHUB_USERNAME/todoapp:v1
+          image: harivarsan1177/todoapp:v1
           ports:
             - containerPort: 5000
           imagePullPolicy: Always
