@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f7fb">
+    <title>TaskFlow | My To-Do List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="page-shell">
+        <header class="site-header">
+            <a class="brand" href="{{ url_for('index') }}" aria-label="TaskFlow home">
+                <span class="brand-mark" aria-hidden="true">T</span>
+                <span>TaskFlow</span>
+            </a>
+            <span class="version-label">V1 · Create Task</span>
+        </header>
+
+        <section class="task-card" aria-labelledby="page-title">
+            <div class="intro">
+                <p class="eyebrow">A little more focus, every day</p>
+                <h1 id="page-title">My To-Do List</h1>
+                <p class="subtitle">Keep track of what you need to get done.</p>
+            </div>
+
+            {% if error_message %}
+                <div class="message message-error" role="alert">{{ error_message }}</div>
+            {% elif task_added %}
+                <div class="message message-success" role="status">Task added successfully.</div>
+            {% endif %}
+
+            <form class="task-form" action="{{ url_for('add_task') }}" method="post">
+                <label for="task">Task name</label>
+                <div class="form-controls">
+                    <input
+                        id="task"
+                        name="task"
+                        type="text"
+                        value="{{ submitted_title }}"
+                        maxlength="{{ max_task_length }}"
+                        placeholder="e.g. Review lecture notes"
+                        autocomplete="off"
+                        aria-describedby="task-help"
+                    >
+                    <button type="submit">Add Task</button>
+                </div>
+                <p class="field-help" id="task-help">Up to {{ max_task_length }} characters.</p>
+            </form>
+
+            <section class="task-section" aria-labelledby="task-list-heading">
+                <div class="list-heading">
+                    <h2 id="task-list-heading">Your tasks</h2>
+                    <span class="task-count" aria-label="{{ task_count }} tasks">
+                        {{ task_count }} {% if task_count == 1 %}task{% else %}tasks{% endif %}
+                    </span>
+                </div>
+
+                {% if tasks %}
+                    <ul class="task-list">
+                        {% for task in tasks %}
+                            <li class="task-item">
+                                <span class="task-number" aria-hidden="true">{{ "%02d"|format(task.id) }}</span>
+                                <span class="task-title">{{ task.title }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon" aria-hidden="true">+</div>
+                        <p class="empty-title">Your list is clear</p>
+                        <p class="empty-description">Add a task above to get started.</p>
+                    </div>
+                {% endif %}
+            </section>
+
+            <p class="storage-note">Tasks are stored in memory and will reset when the app restarts.</p>
+        </section>
+
+        <footer class="site-footer">Small steps make big progress.</footer>
+    </main>
+</body>
+</html>
