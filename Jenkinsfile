@@ -5,6 +5,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'harivarsan1177/todoapp'
         IMAGE_TAG = 'v1'
+        DOCKER = 'C:\\Users\\ASUS\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe'
     }
 
     stages {
@@ -35,38 +36,38 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t %DOCKER_IMAGE%:%IMAGE_TAG% .'
+                bat '"%DOCKER%" build -t %DOCKER_IMAGE%:%IMAGE_TAG% .'
             }
         }
 
         stage('Login to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-creds',
-                    usernameVariable: 'DOCKERHUB_USERNAME',
-                    passwordVariable: 'DOCKERHUB_TOKEN'
-                )]) {
-                    bat 'echo %DOCKERHUB_TOKEN% | docker login -u %DOCKERHUB_USERNAME% --password-stdin'
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-creds',
+                        usernameVariable: 'DOCKERHUB_USERNAME',
+                        passwordVariable: 'DOCKERHUB_TOKEN'
+                    )
+                ]) {
+                    bat 'echo %DOCKERHUB_TOKEN% | "%DOCKER%" login -u %DOCKERHUB_USERNAME% --password-stdin'
                 }
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                bat 'docker push %DOCKER_IMAGE%:%IMAGE_TAG%'
+                bat '"%DOCKER%" push %DOCKER_IMAGE%:%IMAGE_TAG%'
             }
         }
     }
 
     post {
         success {
-            echo 'V1 tests passed and Docker image was pushed to Docker Hub.'
+            echo 'SUCCESS: V1 tests passed and Docker image was pushed to Docker Hub.'
         }
+
         failure {
-            echo 'V1 pipeline failed. Check Console Output.'
-        }
-        always {
-            bat 'docker logout'
+            echo 'FAILURE: Check Console Output for the exact error.'
         }
     }
 }
