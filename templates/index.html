@@ -14,7 +14,7 @@
                 <span class="brand-mark" aria-hidden="true">T</span>
                 <span>TaskFlow</span>
             </a>
-            <span class="version-label">V1 · Create Task</span>
+            <span class="version-label">V2 · Create &amp; Complete Tasks</span>
         </header>
 
         <section class="task-card" aria-labelledby="page-title">
@@ -28,6 +28,8 @@
                 <div class="message message-error" role="alert">{{ error_message }}</div>
             {% elif task_added %}
                 <div class="message message-success" role="status">Task added successfully.</div>
+            {% elif task_updated %}
+                <div class="message message-success" role="status">Task status updated.</div>
             {% endif %}
 
             <form class="task-form" action="{{ url_for('add_task') }}" method="post">
@@ -59,9 +61,31 @@
                 {% if tasks %}
                     <ul class="task-list">
                         {% for task in tasks %}
-                            <li class="task-item">
+                            <li class="task-item{% if task.completed %} task-item-completed{% endif %}">
                                 <span class="task-number" aria-hidden="true">{{ "%02d"|format(task.id) }}</span>
+                                {% if task.completed %}
+                                    <span class="completion-mark" aria-label="Completed">&#10003;</span>
+                                {% endif %}
                                 <span class="task-title">{{ task.title }}</span>
+                                <form
+                                    class="task-status-form"
+                                    action="{{ url_for('toggle_task', task_id=task.id) }}"
+                                    method="post"
+                                >
+                                    {% if task.completed %}
+                                        <button
+                                            class="status-button"
+                                            type="submit"
+                                            aria-label="Mark {{ task.title }} as pending"
+                                        >Mark as pending</button>
+                                    {% else %}
+                                        <button
+                                            class="status-button"
+                                            type="submit"
+                                            aria-label="Mark {{ task.title }} as completed"
+                                        >Mark complete</button>
+                                    {% endif %}
+                                </form>
                             </li>
                         {% endfor %}
                     </ul>

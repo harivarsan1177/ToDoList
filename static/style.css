@@ -242,6 +242,10 @@ h1 {
     overflow-wrap: anywhere;
 }
 
+.task-item-completed {
+    background: #f7faf8;
+}
+
 .task-number {
     flex: 0 0 auto;
     color: var(--accent);
@@ -251,7 +255,48 @@ h1 {
 }
 
 .task-title {
+    flex: 1;
     font-size: 0.94rem;
+}
+
+.task-item-completed .task-title {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-thickness: 1.5px;
+}
+
+.completion-mark {
+    flex: 0 0 auto;
+    color: var(--success);
+    font-weight: 800;
+}
+
+.task-status-form {
+    flex: 0 0 auto;
+    margin-left: auto;
+}
+
+.status-button {
+    min-height: 34px;
+    padding: 5px 10px;
+    border: 1px solid #cbd4e1;
+    border-radius: 7px;
+    background: #fff;
+    color: #34445d;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.76rem;
+    font-weight: 650;
+}
+
+.status-button:hover {
+    border-color: var(--accent);
+    color: var(--accent-dark);
+}
+
+.status-button:focus-visible {
+    outline: 3px solid #8eacff;
+    outline-offset: 3px;
 }
 
 .empty-state {

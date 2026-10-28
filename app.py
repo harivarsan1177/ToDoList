@@ -1,4 +1,4 @@
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, abort, redirect, render_template, request, url_for
 
 app = Flask(__name__)
 
@@ -16,6 +16,7 @@ def index():
         error_message=None,
         submitted_title="",
         task_added=request.args.get("added") == "1",
+        task_updated=request.args.get("updated") == "1",
         max_task_length=MAX_TASK_LENGTH,
     )
 
@@ -34,7 +35,9 @@ def add_task():
             f"Task titles must be {MAX_TASK_LENGTH} characters or fewer."
         )
     else:
-        tasks.append({"id": next_task_id, "title": title})
+        tasks.append(
+            {"id": next_task_id, "title": title, "completed": False}
+        )
         next_task_id += 1
         return redirect(url_for("index", added="1"))
 
@@ -46,10 +49,21 @@ def add_task():
             error_message=error_message,
             submitted_title=submitted_title,
             task_added=False,
+            task_updated=False,
             max_task_length=MAX_TASK_LENGTH,
         ),
         400,
     )
+
+
+@app.post("/tasks/<int:task_id>/toggle")
+def toggle_task(task_id):
+    task = next((task for task in tasks if task["id"] == task_id), None)
+    if task is None:
+        abort(404)
+
+    task["completed"] = not task["completed"]
+    return redirect(url_for("index", updated="1"))
 
 
 if __name__ == "__main__":

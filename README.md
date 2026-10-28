@@ -2,20 +2,22 @@
 
 **Roll number:** 24MIS0269  
 **Course:** Agile and DevOps  
-**Version:** V1 — Create Task
+**Version:** V2 — Create Task and Mark as Complete
 
 ## Overview
 
-TaskFlow is a small web application for keeping a simple list of tasks. V1 lets a user add a task, see the list, and view the total task count. It is intentionally built with a small Flask backend and a server-rendered HTML page.
+TaskFlow is a small web application for keeping a simple list of tasks. V2 lets a user create tasks, mark tasks as complete, and return completed tasks to pending. It is intentionally built with a small Flask backend and a server-rendered HTML page.
 
-## V1 scope
+## Implemented V1 and V2 scope
 
 - Add a task with a title from 1 to 200 characters after trimming whitespace.
 - Show the task list and the total task count.
 - Show helpful validation feedback and an empty-state message.
 - Render task text safely using Flask/Jinja's automatic HTML escaping.
+- Mark a task as complete or return it to pending using a POST request.
+- Visually distinguish completed tasks with a checkmark and strikethrough.
 
-Task completion, deletion, editing, authentication, and persistent storage are not part of V1.
+Task deletion, editing, authentication, and persistent storage are not implemented.
 
 ## Technology stack
 
@@ -36,8 +38,13 @@ todo-devops-project/
 │   └── index.html
 ├── static/
 │   └── style.css
-└── tests/
-    └── test_app.py
+├── tests/
+│   └── test_app.py
+├── Dockerfile
+├── Jenkinsfile
+└── k8s/
+    ├── v1-deployment.yaml
+    └── v1-service.yaml
 ```
 
 ## Prerequisites
@@ -80,7 +87,7 @@ With the virtual environment activated, run the full test suite from the project
 python -m unittest discover -s tests -v
 ```
 
-Tests use Flask's test client and reset the in-memory task list and ID counter before and after each test.
+Tests use Flask's test client and reset the in-memory task list and ID counter before and after each test. The suite covers task creation, completion and returning to pending, validation, invalid task IDs and HTTP methods, and safe rendering.
 
 ## Known limitation
 
@@ -88,7 +95,6 @@ Tasks are stored only in application memory. They are lost when the application 
 
 ## Planned future work
 
-- **V2 — Mark Task as Complete:** planned; not implemented.
 - **V3 — Delete Task:** planned; not implemented.
 
-GitHub, Jenkins, Docker Hub, and Kubernetes integration are not included in this V1 implementation.
+For V2, no changes have been made to the V1 Dockerfile, Jenkinsfile, or Kubernetes Deployment and Service. V2 Docker image publishing and separate Kubernetes deployment remain future DevOps steps.
